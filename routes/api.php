@@ -24,3 +24,10 @@ Route::get('/eventlist/{userId}', 'EventController@list');
 Route::patch('/event/{id}', 'EventController@update');
 Route::delete('/event/{id}', 'EventController@destroy');
 Route::patch('/setenroll/{eventId}/{userId}', 'EventController@enroll');
+
+Route::prefix('auth')->group(function(){
+
+    Route::post('reset-password', 'APILoginController@sendPasswordResetLink');
+
+    Route::post('reset/password', 'APILoginController@callResetPassword');
+});

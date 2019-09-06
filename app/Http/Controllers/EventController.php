@@ -24,6 +24,7 @@ class EventController extends Controller
         foreach($eventlist as $event)
         {
             $event['enrolled'] = count($event->users()->where('user_id', $userId)->get());
+            $event['participants'] = count($event->users()->get());
         };
         return response()->json($eventlist);
     }
@@ -56,6 +57,7 @@ class EventController extends Controller
         
         $arr = json_decode($event, true);
         $arr['enrolled']=$enrolled;
+        $arr['participants'] = count($event->users()->get());
         $event = json_encode($arr);
         return response()->json($arr);
     }

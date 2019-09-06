@@ -52,4 +52,9 @@ class User extends Authenticatable implements JWTSubject
     {
       return $this->belongsToMany('App\Models\Event');
     }
+
+    public function sendPasswordResetNotificatin($token)
+    {
+      $this->notify(new \app\Notifications\MailResetPasswordNotification($token));
+    }
 }
