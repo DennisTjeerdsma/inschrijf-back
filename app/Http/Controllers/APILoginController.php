@@ -8,6 +8,9 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use App\Http\Requests\UserRequest;
+use Spatie\Permission\Models\Role;
+use App\Models\User;
+
 
 class APILoginController extends Controller
 {
@@ -35,6 +38,12 @@ class APILoginController extends Controller
         ]);
     }
 
+    public function user(Request $request)
+    {
+        $user = User::find(auth('user')->id);
+        $user['role'] = $user->getRoleNames();
+        return response()->json($user);
+    }
     public function sendPasswordResetLink(Request $request)
     {
     return $this->sendResetLinkEmail($request);

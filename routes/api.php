@@ -13,10 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('auth/login', 'APILoginController@login');
-
-Route::middleware('jwt.auth')->get('auth/user', function() {
-    return auth('api')->user();
+Route::post('auth/login', 'AuthController@login');
+Route::group(['middleware' => 'jwt.auth'], function(){
+  Route::get('auth/user', 'AuthController@user');});Route::group(['middleware' => 'jwt.refresh'], function(){
+  Route::get('auth/refresh', 'AuthController@refresh');
+  Route::post('auth/logout', 'AuthController@logout');
 });
 
 Route::post('/makeevent', 'EventController@store');
@@ -31,3 +32,6 @@ Route::prefix('auth')->group(function(){
 
     Route::post('reset/password', 'APILoginController@callResetPassword');
 });
+
+Route::get('/userlist', 'UserController@load');
+Route::get('/roleslist', 'UserController@loadroles');
