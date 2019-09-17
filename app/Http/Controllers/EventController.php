@@ -6,13 +6,16 @@ use App\Models\Event;
 use Illuminate\Http\Request;
 use App\Http\Requests\EventStoreRequest;
 use Carbon\Carbon;
+use Auth;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class EventController extends Controller
 {
 
     public function __construct()
     {
-        $this->middleware('jwt.auth');
+        $this->middleware(['jwt.auth', 'clearance']);
     }
 
     public function store(EventStoreRequest $request) {
@@ -20,6 +23,7 @@ class EventController extends Controller
     }
 
     public function list($userId, Request $request) {
+
         $eventlist = Event::whereDate('starttime', '>=', Carbon::today())->get();
 
         foreach($eventlist as $event)
@@ -44,16 +48,17 @@ class EventController extends Controller
         return response()->json($event);
     }
 
-    public function enroll($eventId, $userId, Request $request){
+    public function enroll($eventId, Request $request){
         $event = Event::findOrFail($eventId);
-        $participating = count($event->users()->where('user_id', $userId)->get());
+        $current_user = Auth::user();
+        $participating = count($event->users()->where('user_id', $current_user->id)->get());
 
         if ($event['enrolltime'] >= Carbon::now()){
             if ($participating == 0) {
-                $event->users()->attach($userId);
+                $event->users()->attach($current_user->id);
                 $enrolled = 1;
             } elseif ($participating > 0) {
-                $event->users()->detach($userId);
+                $event->users()->detach($current_user->id);
                 $enrolled = 0;
             }
         } else {

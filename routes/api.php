@@ -20,18 +20,21 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('auth/logout', 'AuthController@logout');
 });
 
+Route::prefix('auth')->group(function(){
+
+    Route::post('reset-password', 'AuthController@sendPasswordResetLink');
+
+    Route::post('reset/password', 'AuthController@callResetPassword');
+});
+
 Route::post('/makeevent', 'EventController@store');
 Route::get('/eventlist/{userId}', 'EventController@list');
 Route::patch('/event/{id}', 'EventController@update');
 Route::delete('/event/{id}', 'EventController@destroy');
-Route::patch('/setenroll/{eventId}/{userId}', 'EventController@enroll');
-
-Route::prefix('auth')->group(function(){
-
-    Route::post('reset-password', 'APILoginController@sendPasswordResetLink');
-
-    Route::post('reset/password', 'APILoginController@callResetPassword');
-});
-
+Route::patch('/setenroll/{eventId}', 'EventController@enroll');
 Route::get('/userlist', 'UserController@load');
 Route::get('/roleslist', 'UserController@loadroles');
+
+Route::delete('/user/delete/{userId}', 'UserController@destroy');
+Route::delete('/user/delete' ,'UserController@multidestroy');
+
