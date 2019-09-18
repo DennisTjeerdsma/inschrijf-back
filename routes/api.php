@@ -37,4 +37,5 @@ Route::get('/roleslist', 'UserController@loadroles');
 
 Route::delete('/user/delete/{userId}', 'UserController@destroy');
 Route::delete('/user/delete' ,'UserController@multidestroy');
+Route::post('/user/create', 'UserController@create');
 

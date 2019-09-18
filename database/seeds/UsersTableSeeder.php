@@ -11,7 +11,8 @@ class UsersTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+     public function run()
+     
     {
         User::query()->truncate(); // truncate user table each time of seeders run
         $user = User::create([ // create a new user

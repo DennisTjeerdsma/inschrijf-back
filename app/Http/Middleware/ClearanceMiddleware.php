@@ -72,6 +72,28 @@ class ClearanceMiddleware
             }
         }
 
+        if ($request->is('api/user/delete/*'))
+        {
+            if (!Auth::user()->hasPermissionTo('edit users'))
+            {
+                abort('401');
+            }
+            else {
+                return $next($request);
+            }
+        }
+
+        if ($request->is('api/user/delete'))
+        {
+            if (!Auth::user()->hasPermissionTo('edit users'))
+            {
+                abort('401');
+            }
+            else {
+                return $next($request);
+            }
+        }
+
         return $next($request);
     }
 }
