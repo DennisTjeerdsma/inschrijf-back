@@ -37,7 +37,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($userId);
         $user['role'] = $user->getRoleNames()->first();
-        if ($user['role'] = 'Super Admin')
+        if ($user['role'] === 'Super Admin')
         {
             abort('401');
         }

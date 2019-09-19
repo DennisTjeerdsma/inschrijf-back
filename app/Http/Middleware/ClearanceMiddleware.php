@@ -83,7 +83,7 @@ class ClearanceMiddleware
             }
         }
 
-        if ($request->is('api/user/delete'))
+        if ($request->is('api/user/multidelete'))
         {
             if (!Auth::user()->hasPermissionTo('edit users'))
             {
