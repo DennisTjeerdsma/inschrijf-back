@@ -27,15 +27,20 @@ Route::prefix('auth')->group(function(){
     Route::post('reset/password', 'AuthController@callResetPassword');
 });
 
+
+// Event routes
 Route::post('/makeevent', 'EventController@store');
 Route::get('/eventlist/{userId}', 'EventController@list');
 Route::patch('/event/{id}', 'EventController@update');
 Route::delete('/event/{id}', 'EventController@destroy');
 Route::patch('/setenroll/{eventId}', 'EventController@enroll');
+
+
+
+// User routes
 Route::get('/userlist', 'UserController@load');
 Route::get('/roleslist', 'UserController@loadroles');
-
 Route::delete('/user/delete/{userId}', 'UserController@destroy');
-Route::delete('/user/delete' ,'UserController@multidestroy');
+Route::delete('/user/multidelete' ,'UserController@multidestroy');
 Route::post('/user/create', 'UserController@create');
 

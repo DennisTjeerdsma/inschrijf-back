@@ -5,6 +5,7 @@
     use Illuminate\Contracts\Queue\ShouldQueue;
     use Illuminate\Notifications\Messages\MailMessage;
     use Illuminate\Auth\Notifications\ResetPassword;
+    
     class MailResetPasswordNotification extends ResetPassword
     {
         use Queueable;
@@ -15,7 +16,7 @@
          */
         public function __construct($token)
         {
-            parent::__construct($token)
+            parent::__construct($token);
         }
         /**
          * Get the notification's delivery channels.

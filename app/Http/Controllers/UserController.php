@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Auth;
@@ -50,15 +51,19 @@ class UserController extends Controller
     public function multidestroy(Request $request)
     {
         $idArray = $request->all();
+        $count = 0;
 
         foreach ($idArray as $id)
         {
+            $count += 1;
             $user = User::findorFail($id);
             $user['role'] = $user->getRoleNames()->first();
 
             if ($user['role'] != 'Super Admin')
             {
                 $user->delete();
+            } else {
+                \array_splice($idArray, $count -1, 1);
             }
         }
 
@@ -86,6 +91,9 @@ class UserController extends Controller
         $user->password = $pw;
         $user->assignRole('Gebruiker');
         $user->save();
-        User::sendWelcomeEmail($user);
+        $user['role'] = "Gebruiker";
+        $token = app('auth.password.broker')->createToken($user);
+        $user->notify(new \App\Notifications\MailWelcomeNotification($token));
+        return response()->json($user);
     }
 }

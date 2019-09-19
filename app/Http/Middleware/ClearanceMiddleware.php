@@ -94,6 +94,15 @@ class ClearanceMiddleware
             }
         }
 
+        if ($request->is('api/user/create'))
+        {
+            if (!Auth::user()->hasPermissionTo('create users'))
+            {
+                abort('401');
+            } else{
+                return $next($request);
+            }
+        }
         return $next($request);
     }
 }

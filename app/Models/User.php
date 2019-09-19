@@ -7,6 +7,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Mail;
+use App\Mail\Welcome;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -57,5 +59,18 @@ class User extends Authenticatable implements JWTSubject
     public function sendPasswordResetNotificatin($token)
     {
       $this->notify(new \app\Notifications\MailResetPasswordNotification($token));
+    }
+
+    
+    public static function generatePassword()
+    {
+      // Generate random string and encrypt it. 
+      return bcrypt(str_random(35));
+    }
+    public function sendWelcomeEmail($token)
+    {
+      // Send email
+      $this->notify(new \App\Notifications\MailWelcomeNotification($token));
+
     }
 }
