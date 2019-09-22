@@ -24,7 +24,7 @@ class EventStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|min:3',
+            'title' => 'required|min:3|max:48',
             'starttime' => 'required|date|after:today',
             'descriptions' => 'nullable',
             'enroll' => 'required',

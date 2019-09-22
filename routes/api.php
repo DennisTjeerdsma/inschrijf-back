@@ -34,7 +34,7 @@ Route::get('/eventlist/{userId}', 'EventController@list');
 Route::patch('/event/{id}', 'EventController@update');
 Route::delete('/event/{id}', 'EventController@destroy');
 Route::patch('/setenroll/{eventId}', 'EventController@enroll');
-
+Route::get('/event/{id}', 'EventController@load');
 
 
 // User routes
