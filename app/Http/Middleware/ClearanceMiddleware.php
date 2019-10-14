@@ -83,7 +83,7 @@ class ClearanceMiddleware
             }
         }
 
-        if ($request->is('api/user/delete'))
+        if ($request->is('api/user/multidelete'))
         {
             if (!Auth::user()->hasPermissionTo('edit users'))
             {
@@ -97,6 +97,17 @@ class ClearanceMiddleware
         if ($request->is('api/user/create'))
         {
             if (!Auth::user()->hasPermissionTo('create users'))
+            {
+                abort('401');
+            } else{
+                return $next($request);
+            }
+        }
+        return $next($request);
+
+        if ($request->is('api/user/patch/*'))
+        {
+            if (!Auth::user()->hasPermissionTo('edit users'))
             {
                 abort('401');
             } else{

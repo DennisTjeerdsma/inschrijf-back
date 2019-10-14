@@ -37,7 +37,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($userId);
         $user['role'] = $user->getRoleNames()->first();
-        if ($user['role'] = 'Super Admin')
+        if ($user['role'] === 'Super Admin')
         {
             abort('401');
         }
@@ -96,4 +96,32 @@ class UserController extends Controller
         $user->notify(new \App\Notifications\MailWelcomeNotification($token));
         return response()->json($user);
     }
+
+    public function patch($userId, Request $request)
+    {
+        $user = User::findOrFail($userId);
+        $input = $request->all();
+        $user->fill($input)->save();
+        if ($input['role'] != "Super Admin"){
+            $user->syncRoles($input['role']);
+        }
+        else {
+            return response()->json(['message'=>'Super Admin role is not applicable'], 406);
+        }
+        $user['role'] = $user->getRoleNames()->first();
+        return response()->json($user);
+    }
+
+    public function fetch($userId)
+    {
+        $user = User::findOrFail($userId);
+        $user['role'] = $user->getRoleNames()->first();
+        return response()->json($user);
+    }
+
+    public function upload(Request $request)
+    {
+        
+    }
+
 }

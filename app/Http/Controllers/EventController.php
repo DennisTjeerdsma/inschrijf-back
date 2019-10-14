@@ -35,10 +35,12 @@ class EventController extends Controller
     }
 
     public function update($id, EventStoreRequest $request){
+        $user = Auth::user();
         $event = Event::findOrFail($id);
         $input = $request->validated();
         $event->fill($input)->save();
-
+        $event['enrolled'] = count($event->users()->where('user_id', $user->id)->get());
+        $event['participants'] = count($event->users()->get());
         return response()->json($event);
     }
 
@@ -52,9 +54,14 @@ class EventController extends Controller
         $event = Event::findOrFail($eventId);
         $current_user = Auth::user();
         $participating = count($event->users()->where('user_id', $current_user->id)->get());
+        $event['participants'] = count($event->users()->get());
+
+        if ($event['participants'] >= $event['maxparticipants'] && $participating === 0 && $event['maxparticipants'] != 0 ){
+            return response()->json(['message' => 'No more participants allowed, please contact the Actie for enrollment possibilities'], 406);
+        }
 
         if ($event['enrolltime'] >= Carbon::now()){
-            if ($participating == 0) {
+            if ($participating === 0) {
                 $event->users()->attach($current_user->id);
                 $enrolled = 1;
             } elseif ($participating > 0) {
@@ -64,10 +71,18 @@ class EventController extends Controller
         } else {
             return response()->json(['message'=>'Enrollment is closed'], 406);
         }
-                $arr = json_decode($event, true);
-        $arr['enrolled']=$enrolled;
-        $arr['participants'] = count($event->users()->get());
-        $event = json_encode($arr);
-        return response()->json($arr);
+        $event['participants'] = count($event->users()->get());
+        $event['enrolled'] = $enrolled;
+        return response()->json($event);
+    }
+
+    public function load($eventId){
+        $event = Event::findorFail($eventId);
+        $current_user = Auth::user();
+
+        $event['enrolled'] = count($event->users()->where('user_id', $current_user->id)->get());
+        $event['participants'] = $event->users()->get();
+        $event['countParticipants'] = count($event->users()->get());
+        return response()->json($event);
     }
 }
