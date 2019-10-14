@@ -56,7 +56,7 @@ class EventController extends Controller
         $participating = count($event->users()->where('user_id', $current_user->id)->get());
         $event['participants'] = count($event->users()->get());
 
-        if ($event['participants'] >= $event['maxparticipants'] && $participating === 0 ){
+        if ($event['participants'] >= $event['maxparticipants'] && $participating === 0 && $event['maxparticipants'] != 0 ){
             return response()->json(['message' => 'No more participants allowed, please contact the Actie for enrollment possibilities'], 406);
         }
 
@@ -71,7 +71,7 @@ class EventController extends Controller
         } else {
             return response()->json(['message'=>'Enrollment is closed'], 406);
         }
-
+        $event['participants'] = count($event->users()->get());
         $event['enrolled'] = $enrolled;
         return response()->json($event);
     }

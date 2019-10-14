@@ -104,5 +104,16 @@ class ClearanceMiddleware
             }
         }
         return $next($request);
+
+        if ($request->is('api/user/patch/*'))
+        {
+            if (!Auth::user()->hasPermissionTo('edit users'))
+            {
+                abort('401');
+            } else{
+                return $next($request);
+            }
+        }
+        return $next($request);
     }
 }
